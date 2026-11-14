@@ -24,6 +24,7 @@ XBOXUSB::XBOXUSB(USB *p) :
 pUsb(p), // pointer to USB class instance - mandatory
 bAddress(0), // device address - mandatory
 bPollEnable(false) { // don't start polling before dongle is connected
+        pFuncOnInit = NULL;
         for(uint8_t i = 0; i < XBOX_MAX_ENDPOINTS; i++) {
                 epInfo[i].epAddr = 0;
                 epInfo[i].maxPktSize = (i) ? 0 : 8;
@@ -172,7 +173,7 @@ uint8_t XBOXUSB::Init(uint8_t parent, uint8_t port, bool lowspeed) {
         if(rcode)
                 goto FailSetDevTblEntry;
 
-        delay(200); // Give time for address change
+        delay(2); // Give time for address change
 
         rcode = pUsb->setConf(bAddress, epInfo[ XBOX_CONTROL_PIPE ].epAddr, 1);
         if(rcode)

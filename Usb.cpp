@@ -196,7 +196,8 @@ uint8_t USB::ctrlReq(uint8_t addr, uint8_t ep, uint8_t bmReqType, uint8_t bReque
                         return ( rcode);
         }
         // Status stage
-        return dispatchPkt((direction) ? tokOUTHS : tokINHS, ep, nak_limit); //GET if direction
+        rcode = dispatchPkt((direction) ? tokOUTHS : tokINHS, ep, nak_limit); //GET if direction
+        return rcode;
 }
 
 /* IN transfer to arbitrary endpoint. Assumes PERADDR is set. Handles multiple packets if necessary. Transfers 'nbytes' bytes. */
@@ -823,7 +824,7 @@ uint8_t USB::getStrDescr(uint8_t addr, uint8_t ep, uint16_t ns, uint8_t index, u
 uint8_t USB::setAddr(uint8_t oldaddr, uint8_t ep, uint8_t newaddr) {
         uint8_t rcode = ctrlReq(oldaddr, ep, bmREQ_SET, USB_REQUEST_SET_ADDRESS, newaddr, 0x00, 0x0000, 0x0000, 0x0000, NULL, NULL);
         //delay(2); //per USB 2.0 sect.9.2.6.3
-        delay(300); // Older spec says you should wait at least 200ms
+        delay(2); // Experimental M30 initialization timing
         return rcode;
         //return ( ctrlReq(oldaddr, ep, bmREQ_SET, USB_REQUEST_SET_ADDRESS, newaddr, 0x00, 0x0000, 0x0000, 0x0000, NULL, NULL));
 }
